@@ -7,32 +7,34 @@ from heyurl.utils.helper import DataHelper
 dh = DataHelper()
 
 
-mock_http_post = namedtuple('Post', ['get'], defaults=[lambda orginal_url=dh.original_url: None])
-# mock_http_get = namedtuple('Get', ['get'], defaults=[lambda *args: dh.original_url if args[0] else None])
 mock_browser = namedtuple('Browser', ['Family'], defaults=['chrome'])
-
 mock_user_agent = namedtuple(
     'UserAgent',
     ['browser', 'is_pc', 'is_mobile', 'is_tablet'],
     defaults=[mock_browser, None, None, None]
 )
 
+mock_http_post = namedtuple('Post', ['get'], defaults=[lambda original_url=dh.original_url: None])
+mock_post_new = mock_http_post(lambda original_url: dh.new_urls[0])
+mock_http_get = namedtuple('Get', ['get'], defaults=[lambda *args: dh.short_url if args[0] == 'short_url' else None])
+
 mock_request = namedtuple(
-    'Request', 
+    'RequestMock',
     ['POST', 'GET', 'user_agent', 'path', 'method'],
     defaults=[
         mock_http_post(), 
-        dict(original_url=dh.original_url),
+        dict(short_url=dh.short_url),
         mock_user_agent(),
         dh.short_url,
         'POST'
     ]
 )
 
+mock_request_new = mock_request(mock_post_new, dict(short_url=dh.short_url), mock_user_agent(), None, 'POST')
+
 Mocks = namedtuple(
     'HelpTest',
-    ['request'], defaults=[mock_request()], 
+    ['browser', 'user_agent', 'http_post', 'http_get', 'http_request', 'http_request_new'],
+    defaults=[mock_browser, mock_user_agent, mock_http_post, mock_http_get, mock_request, mock_request_new]
 )
 
-mocks = Mocks()
-request = mocks.request

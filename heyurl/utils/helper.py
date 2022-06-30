@@ -4,6 +4,7 @@ from collections import namedtuple
 import string
 import secrets
 
+
 @dataclass
 class DataHelper:
     chars: str = f'{string.ascii_uppercase}{string.ascii_lowercase}{string.digits}'
@@ -11,7 +12,7 @@ class DataHelper:
     original_url: str = 'http://fullstacklabs.com'
     short_url: str = 'a'
     invalid_url: str = 'invalid#url'
-    new_urls: list = field(default_factory=lambda: ['t.me', 'z.com'])
+    new_urls: list = field(default_factory=lambda: ['http://t.me', 'http://z.com'])
     host: str = '127.0.0.1:8000'
 
 

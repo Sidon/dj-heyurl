@@ -11,6 +11,7 @@ def get_url_by_original(original_url):
 
 
 def get_url_by_short(short_url):
+    # breakpoint()
     return models.Url.objects.filter(short_url=short_url).first()
 
 

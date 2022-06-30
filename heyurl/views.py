@@ -39,37 +39,37 @@ def store(request):
     return HttpResponse(f"Storing a new URL object into storage<br>{url_serialized}")
 
 
-def short_url(request, short_url):
-    # FIXME: Do the logging to the db of the click with the user agent and browser
-    if not (target_url := _update_clicks(request, short_url)):
-        return HttpResponse(f'Invalid Url:<br>{short_url}')
-    return redirect(target_url.original_url)
-    # return HttpResponse("You're looking at url %s" % short_url)
-
-
 def _update_clicks(request, _short_url):
-    target_url = None
     if url := db_services.get_url_by_short(_short_url):
         click = models.Click()
         browser, platform = helper.get_data_clicks(get_user_agent(request))
         click = db_services.save_click(_short_url, browser, platform)
-        target_url = url.original_url
-    return target_url
+    return url
+
+
+
+def short_url(request, _short_url):
+    # FIXME: Do the logging to the db of the click with the user agent and browser
+    if not (target_url := _update_clicks(request, _short_url)):
+        return HttpResponse(f'Invalid Url:<br>{_short_url}')
+
+    return redirect(target_url.original_url)
+    # return HttpResponse("You're looking at url %s" % short_url)
 
 
 @json_view
 def handler404(request, exception):
     url_fragments = [fragment for fragment in request.path.split('/') if fragment]
     if len(url_fragments) == 1:
-        if target_url := _update_clicks(request, url_fragments[0]):
-            return redirect(target_url)
+        if url := _update_clicks(request, url_fragments[0]):
+            return redirect(url.original_url)
     return render(request, 'heyurl/404.html')
 
 @json_view
 def month_metrics(request):
     valid_query = False
-    if url := request.GET.get('short_url', None):
-        if db_services.get_url_by_short(url):
+    if _short_url := request.GET.get('short_url', None):
+        if db_services.get_url_by_short(_short_url):
             today = datetime.today()
             month = request.GET.get('month', today.month)
             year = request.GET.get('year', today.year)
@@ -78,8 +78,9 @@ def month_metrics(request):
     if not valid_query:
         return render(request, 'heyurl/404.html')
 
-    metrics = [db_services.get_metrics(url, year, month)]
-    return metrics
+    m  = [db_services.get_metrics(_short_url, year, month)]
+    breakpoint()
+    return m
 
 @json_view
 def top_ten(request):
