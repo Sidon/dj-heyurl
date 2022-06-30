@@ -2,7 +2,7 @@ from collections import namedtuple
 from dataclasses import dataclass, field
 
 from requests import request
-from heyurl.utils.data_helper import DataHelper
+from heyurl.utils.helper import DataHelper
 
 dh = DataHelper()
 

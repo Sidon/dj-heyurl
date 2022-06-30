@@ -1,9 +1,10 @@
 from collections import Counter
 from jsonview.decorators import json_view
 from heyurl import models
-from heyurl.utils.data_helper import DataHelper
+from heyurl.utils import helper
 
-dh = DataHelper()
+dh = helper.DataHelper()
+
 
 def get_url_by_original(original_url):
     return models.Url.objects.filter(original_url=original_url).first()
@@ -16,8 +17,8 @@ def get_url_by_short(short_url):
 
 def create_short_url(original_url):
     key = 'a'
-    while models.Url.objects.filter(original_url=original_url).exists():
-        key = dh.key_gen()
+    while models.Url.objects.filter(short_url=key).exists():
+        key = helper.key_gen()
 
     url = models.Url()
     url.original_url = original_url

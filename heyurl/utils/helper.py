@@ -15,12 +15,9 @@ class DataHelper:
     host: str = '127.0.0.1:8000'
 
 
-_dh = DataHelper()
-
-
 def key_gen():
-    key_len = secrets.choice(range(1, _dh.max_length+1))
-    key = "".join(secrets.choice(_dh.chars) for n_times in range(key_len))
+    key_len = secrets.choice(range(1,  DataHelper().max_length+1))
+    key = "".join(secrets.choice(DataHelper().chars) for n_times in range(key_len))
     return key
 
 
@@ -32,4 +29,7 @@ def get_data_clicks(user_agent):
         platform='Tablet'
     else:
         platform='PC'
-    return browser, platform        
+    return browser, platform
+
+
+
