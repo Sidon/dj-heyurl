@@ -19,3 +19,5 @@ urlpatterns = [
     path('', include('heyurl.routes.web')),
     path('u/<short_url>/', include('heyurl.routes.short_url')),
 ]
+
+handler404 = 'heyurl.views.handler404'

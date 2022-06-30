@@ -5,12 +5,12 @@ from heyurl.utils.data_helper import DataHelper
 
 dh = DataHelper()
 
-
-def get_original_url(original_url):
+def get_url_by_original(original_url):
     return models.Url.objects.filter(original_url=original_url).first()
 
 
-def get_short_url(short_url):
+def get_url_by_short(short_url):
+    # breakpoint()
     return models.Url.objects.filter(short_url=short_url).first()
 
 
@@ -27,7 +27,7 @@ def create_short_url(original_url):
 
 
 def save_click(short_url, browser, platform):
-    if url := get_short_url(short_url):
+    if url := get_url_by_short(short_url):
         click = models.Click()
         click.url = url
         click.browser = browser

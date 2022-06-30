@@ -4,7 +4,6 @@ from collections import namedtuple
 import string
 import secrets
 
-
 @dataclass
 class DataHelper:
     chars: str = f'{string.ascii_uppercase}{string.ascii_lowercase}{string.digits}'
@@ -18,21 +17,6 @@ class DataHelper:
 
 _dh = DataHelper()
 
-mock_http_post = namedtuple("Post", ['get'], defaults=[lambda original_url: None])
-mock_http_get = namedtuple("Get", ['get'], defaults=[lambda *args: 'a' if args[0]=='short_url' else None])
-mock_browser = namedtuple("Browser", ['family'], defaults=['chrome'])
-mock_user_agent = namedtuple('UserAgent', ['browser', 'is_pc', 'is_tablet', 'is_mobile'], defaults=[mock_browser])
-
-mock_request = namedtuple('Request', ['POST', 'GET', 'method', 'path', 'user_agent'],
-                          defaults=[mock_http_post, dict(original_url=_dh.original_url), 'POST', '/a', mock_user_agent]
-                          )
-
-hey_helper = namedtuple(
-    "HeyHelper",
-    ['http_POST', 'http_GET', 'browser', 'user_agent', 'request'],
-    defaults=[mock_http_post(), mock_http_get, mock_browser, mock_user_agent, mock_request]
-)
-
 
 def key_gen():
     key_len = secrets.choice(range(1, _dh.max_length+1))
@@ -40,8 +24,12 @@ def key_gen():
     return key
 
 
-
-
-
-
-
+def get_data_clicks(user_agent):
+    browser = user_agent.browser.family
+    if user_agent.is_mobile:
+        platform='Mobile'
+    elif user_agent.is_tablet:
+        platform='Tablet'
+    else:
+        platform='PC'
+    return browser, platform        
