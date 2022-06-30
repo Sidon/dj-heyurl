@@ -11,7 +11,6 @@ def get_url_by_original(original_url):
 
 
 def get_url_by_short(short_url):
-    # breakpoint()
     return models.Url.objects.filter(short_url=short_url).first()
 
 
@@ -76,8 +75,35 @@ def get_top_metrics(n=10, host=dh.host):
     return data
 
 
+def get_metrics(short_url, year, month):
+    clicks = models.Click.objects.filter(
+        created_at__year=year,
+        created_at__month=month,
+        url__short_url=short_url
+    )
+    metrics_day = dict()
+    original_url = None
+    if clicks:
+        original_url = clicks[0].url.original_url
+        for click in clicks:
+            day=click.created_at.day
+            if not day in metrics_day:
+                metrics_day[day] = dict(browser=dict(), platform=dict())
+            if click.browser in metrics_day[day]['browser']:
+                metrics_day[day]['browser'][click.browser] +=1
+            else:
+                metrics_day[day]['browser'][click.browser] =1
+            if click.platform in metrics_day[day]['platform']:
+                metrics_day[day]['platform'][click.platform] +=1
+            else:
+                metrics_day[day]['platform'][click.platform] = 1
 
-
-
-
+        metrics = dict(
+            short_url=short_url,
+            original_url=original_url,
+            year=year,
+            month=month,
+            data=[metrics_day]
+        )
+    return metrics
 

@@ -18,6 +18,7 @@ from django.urls import include, path
 urlpatterns = [
     path('', include('heyurl.routes.web')),
     path('u/<short_url>/', include('heyurl.routes.short_url')),
+    path('metrics/', include('heyurl.routes.metrics_url'))
 ]
 
 handler404 = 'heyurl.views.handler404'
