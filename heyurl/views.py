@@ -47,7 +47,6 @@ def _update_clicks(request, _short_url):
     return url
 
 
-
 def short_url(request, _short_url):
     # FIXME: Do the logging to the db of the click with the user agent and browser
     if not (target_url := _update_clicks(request, _short_url)):
@@ -78,9 +77,8 @@ def month_metrics(request):
     if not valid_query:
         return render(request, 'heyurl/404.html')
 
-    m  = [db_services.get_metrics(_short_url, year, month)]
-    breakpoint()
-    return m
+    metrics = [db_services.get_metrics(_short_url, year, month)]
+    return metrics
 
 @json_view
 def top_ten(request):

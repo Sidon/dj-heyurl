@@ -9,7 +9,7 @@ import secrets
 class DataHelper:
     chars: str = f'{string.ascii_uppercase}{string.ascii_lowercase}{string.digits}'
     max_length: int = 5
-    original_url: str = 'http://fullstacklabs.com'
+    original_url: str = 'http://fullstacklabs.co'
     short_url: str = 'a'
     invalid_url: str = 'invalid#url'
     new_urls: list = field(default_factory=lambda: ['http://t.me', 'http://z.com'])

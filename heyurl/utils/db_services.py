@@ -82,7 +82,7 @@ def get_metrics(short_url, year, month):
         created_at__month=month,
         url__short_url=short_url
     )
-    metrics_day = dict()
+    metrics, metrics_day = dict(), None
     original_url = None
     if clicks:
         original_url = clicks[0].url.original_url
