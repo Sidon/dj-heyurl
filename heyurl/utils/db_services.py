@@ -11,7 +11,6 @@ def get_url_by_original(original_url):
 
 
 def get_url_by_short(short_url):
-    # breakpoint()
     return models.Url.objects.filter(short_url=short_url).first()
 
 
@@ -82,7 +81,7 @@ def get_metrics(short_url, year, month):
         created_at__month=month,
         url__short_url=short_url
     )
-    metrics, metrics_day = dict(), None
+    metrics, metrics_day = None, dict()
     original_url = None
     if clicks:
         original_url = clicks[0].url.original_url

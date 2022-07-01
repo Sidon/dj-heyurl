@@ -51,7 +51,6 @@ def short_url(request, _short_url):
     # FIXME: Do the logging to the db of the click with the user agent and browser
     if not (target_url := _update_clicks(request, _short_url)):
         return HttpResponse(f'Invalid Url:<br>{_short_url}')
-
     return redirect(target_url.original_url)
     # return HttpResponse("You're looking at url %s" % short_url)
 
