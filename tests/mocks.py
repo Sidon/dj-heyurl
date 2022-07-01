@@ -1,17 +1,16 @@
 from collections import namedtuple
 from dataclasses import dataclass, field
-
 from requests import request
 from heyurl.utils.helper import DataHelper
 
 dh = DataHelper()
 
 
-mock_browser = namedtuple('Browser', ['Family'], defaults=['chrome'])
+mock_browser = namedtuple('Browser', ['family'], defaults=['Chrome'])
 mock_user_agent = namedtuple(
     'UserAgent',
     ['browser', 'is_pc', 'is_mobile', 'is_tablet'],
-    defaults=[mock_browser, None, None, None]
+    defaults=[mock_browser(), None, None, None]
 )
 
 mock_http_post = namedtuple('Post', ['get'], defaults=[lambda original_url=dh.original_url: None])
