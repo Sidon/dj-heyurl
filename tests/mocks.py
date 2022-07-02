@@ -11,7 +11,7 @@ user_agent = namedtuple(
 )
 
 post = namedtuple('Post', ['get'], defaults=[lambda original_url=helper.original_url: None])
-new_post = post(lambda original_url: helper.new_urls[0])
+new_post = post(lambda original_url: helper.new_url)
 get = namedtuple('Get', ['get'], defaults=[lambda *args: helper.short_url if args[0] == 'short_url' else None])
 
 request = namedtuple(

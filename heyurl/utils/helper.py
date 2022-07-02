@@ -5,7 +5,7 @@ chars = f'{string.ascii_uppercase}{string.ascii_lowercase}{string.digits}'
 max_len = 5
 original_url = 'http://fullstacklabs.co'
 short_url = 'a'
-new_urls = ['http://t.me', 'http://z.com']
+new_url = 'http://t.me'
 host = '127.0.0.1:8000'
 
 
