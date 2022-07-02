@@ -1,39 +1,36 @@
 from collections import namedtuple
-from dataclasses import dataclass, field
-from requests import request
-from heyurl.utils.helper import DataHelper
-
-dh = DataHelper()
+from dataclasses import dataclass
+from heyurl.utils import helper
 
 
-mock_browser = namedtuple('Browser', ['family'], defaults=['Chrome'])
-mock_user_agent = namedtuple(
+browser = namedtuple('Browser', ['family'], defaults=['Chrome'])
+user_agent = namedtuple(
     'UserAgent',
     ['browser', 'is_pc', 'is_mobile', 'is_tablet'],
-    defaults=[mock_browser(), None, None, None]
+    defaults=[browser(), None, None, None]
 )
 
-mock_http_post = namedtuple('Post', ['get'], defaults=[lambda original_url=dh.original_url: None])
-mock_post_new = mock_http_post(lambda original_url: dh.new_urls[0])
-mock_http_get = namedtuple('Get', ['get'], defaults=[lambda *args: dh.short_url if args[0] == 'short_url' else None])
+post = namedtuple('Post', ['get'], defaults=[lambda original_url=helper.original_url: None])
+new_post = post(lambda original_url: helper.new_urls[0])
+get = namedtuple('Get', ['get'], defaults=[lambda *args: helper.short_url if args[0] == 'short_url' else None])
 
-mock_request = namedtuple(
+request = namedtuple(
     'RequestMock',
     ['POST', 'GET', 'user_agent', 'path', 'method'],
     defaults=[
-        mock_http_post(), 
-        dict(short_url=dh.short_url),
-        mock_user_agent(),
-        dh.short_url,
+        post(), 
+        dict(short_url=helper.short_url),
+        user_agent(),
+        helper.short_url,
         'POST'
     ]
 )
 
-mock_request_new = mock_request(mock_post_new, dict(short_url=dh.short_url), mock_user_agent(), None, 'POST')
+request_new = request(new_post, dict(short_url=helper.short_url), user_agent(), None, 'POST')
 
 Mocks = namedtuple(
     'HelpTest',
-    ['browser', 'user_agent', 'http_post', 'http_get', 'http_request', 'http_request_new'],
-    defaults=[mock_browser, mock_user_agent, mock_http_post, mock_http_get, mock_request, mock_request_new]
+    ['browser', 'user_agent', 'post', 'get', 'request', 'request_new'],
+    defaults=[browser, user_agent, post, get, request, request_new]
 )
 

@@ -1,16 +1,13 @@
 from collections import Counter
-from jsonview.decorators import json_view
 from heyurl import models
-from heyurl.utils import helper
-
-dh = helper.DataHelper()
+from . import helper
 
 
-def get_url_by_original(original_url):
+def get_by_original(original_url):
     return models.Url.objects.filter(original_url=original_url).first()
 
 
-def get_url_by_short(short_url):
+def get_by_short(short_url):
     return models.Url.objects.filter(short_url=short_url).first()
 
 
@@ -18,7 +15,6 @@ def create_short_url(original_url):
     key = 'a'
     while models.Url.objects.filter(short_url=key).exists():
         key = helper.key_gen()
-
     url = models.Url()
     url.original_url = original_url
     url.short_url = key
@@ -27,7 +23,7 @@ def create_short_url(original_url):
 
 
 def save_click(short_url, browser, platform):
-    if url := get_url_by_short(short_url):
+    if url := get_by_short(short_url):
         click = models.Click()
         click.url = url
         click.browser = browser
@@ -38,8 +34,44 @@ def save_click(short_url, browser, platform):
     return url
 
 
-def _get_top_n_metrics(clicks):
+def get_metrics(short_url, year, month):
+    clicks = models.Click.objects.filter(
+        url__short_url=short_url,
+        created_at__year=year,
+        created_at__month=month,
+    )
 
+    day_metrics = dict()
+    final_metrics = None
+    if clicks:
+        original_url = clicks[0].url.original_url
+        for click in clicks:
+            day = click.created_at.day
+
+            if day not in day_metrics:
+                day_metrics[day] = dict(browser=dict(), platform=dict())
+
+            if click.browser in day_metrics[day]['browser']:
+                day_metrics[day]['browser'][click.browser] += 1
+            else:
+                day_metrics[day]['browser'][click.browser] = 1
+
+            if click.platform in day_metrics[day]['platform']:
+                day_metrics[day]['platform'][click.platform] += 1
+            else:
+                day_metrics[day]['platform'][click.platform] = 1
+
+        final_metrics = dict(
+            short_url=short_url,
+            original_url=original_url,
+            year=year,
+            month=month,
+            data=[day_metrics]
+        )
+    return final_metrics
+
+
+def _get_top_n_metrics(clicks):
     cnt_browser = Counter()
     cnt_platform = Counter()
 
@@ -51,7 +83,7 @@ def _get_top_n_metrics(clicks):
     return metrics
 
 
-def get_top_metrics(n=10, host=dh.host):
+def get_top_metrics(n=10, host=helper.host):
     top_urls = models.Url.objects.all().order_by('-clicks')[:n]
     data = []
     for url in top_urls:
@@ -73,37 +105,3 @@ def get_top_metrics(n=10, host=dh.host):
         )
 
     return data
-
-
-def get_metrics(short_url, year, month):
-    clicks = models.Click.objects.filter(
-        created_at__year=year,
-        created_at__month=month,
-        url__short_url=short_url
-    )
-    metrics, metrics_day = None, dict()
-    original_url = None
-    if clicks:
-        original_url = clicks[0].url.original_url
-        for click in clicks:
-            day=click.created_at.day
-            if not day in metrics_day:
-                metrics_day[day] = dict(browser=dict(), platform=dict())
-            if click.browser in metrics_day[day]['browser']:
-                metrics_day[day]['browser'][click.browser] +=1
-            else:
-                metrics_day[day]['browser'][click.browser] =1
-            if click.platform in metrics_day[day]['platform']:
-                metrics_day[day]['platform'][click.platform] +=1
-            else:
-                metrics_day[day]['platform'][click.platform] = 1
-
-        metrics = dict(
-            short_url=short_url,
-            original_url=original_url,
-            year=year,
-            month=month,
-            data=[metrics_day]
-        )
-    return metrics
-
