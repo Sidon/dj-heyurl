@@ -1,13 +1,11 @@
 from collections import namedtuple
 from heyurl.utils import helper
 
-
 browser = namedtuple(
     'Browser',
     ['family'],
     defaults=['Chrome']
 )
-
 
 user_agent = namedtuple(
     'UserAgent',
@@ -15,14 +13,12 @@ user_agent = namedtuple(
     defaults=[browser(), None, None, None]
 )
 
-
 post = namedtuple(
     'Post',
     ['get'],
     defaults=
     [lambda original_url=helper.original_url: None]
 )
-
 
 new_post = post(lambda original_url: helper.new_url)
 
@@ -35,7 +31,7 @@ request = namedtuple(
     'RequestMock',
     ['POST', 'GET', 'user_agent', 'path', 'method'],
     defaults=[
-        post(), 
+        post(),
         dict(short_url=helper.short_url),
         user_agent(),
         helper.short_url,
@@ -48,10 +44,8 @@ request_new = request(
     dict(short_url=helper.short_url), user_agent(), None, 'POST'
 )
 
-
 Mocks = namedtuple(
     'HelpTest',
     ['browser', 'user_agent', 'post', 'get', 'request', 'request_new'],
     defaults=[browser, user_agent, post, get, request, request_new]
 )
-
