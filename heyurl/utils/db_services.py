@@ -34,7 +34,7 @@ def save_click(short_url, browser, platform):
     return url
 
 
-def get_metrics(short_url, year, month):
+def get_month_metrics(short_url, year, month):
     clicks = models.Click.objects.filter(
         url__short_url=short_url,
         created_at__year=year,

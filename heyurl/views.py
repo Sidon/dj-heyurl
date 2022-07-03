@@ -67,7 +67,7 @@ def month_metrics(request):
             today = datetime.today()
             month = request.GET.get('month', today.month)
             year = request.GET.get('year', today.year)
-            return [db_services.get_metrics(short_url, year, month)]
+            return [db_services.get_month_metrics(short_url, year, month)]
     return render(request, 'heyurl/404.html')
 
 
