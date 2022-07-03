@@ -1,5 +1,4 @@
 from collections import namedtuple
-from dataclasses import dataclass
 from heyurl.utils import helper
 
 

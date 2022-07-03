@@ -6,7 +6,6 @@ from django_user_agents.utils import get_user_agent
 from django.core.validators import URLValidator, ValidationError
 from jsonview.decorators import json_view
 
-from . import models
 from .models import Url
 from heyurl.utils import db_services, helper
 
@@ -34,7 +33,6 @@ def store(request):
 
 
 def _update_clicks(request, short_url):
-
     if url := db_services.get_by_short(short_url):
         browser, platform = helper.get_data_clicks(get_user_agent(request))
         db_services.save_click(short_url, browser, platform)
@@ -50,6 +48,7 @@ def redirect_short_url(request, short_url):
 
 # Placeholders #
 ################################
+
 def handler404(request, exception):
     fragments = [f for f in request.path.split('/') if f]
     if len(fragments) == 1:
@@ -59,6 +58,7 @@ def handler404(request, exception):
             except exception:
                 print(exception)
     return render(request, 'heyurl/404.html')
+
 
 @json_view
 def month_metrics(request):
@@ -74,4 +74,3 @@ def month_metrics(request):
 @json_view
 def top_ten(request):
     return db_services.get_top_metrics()
-
