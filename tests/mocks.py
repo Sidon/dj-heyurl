@@ -19,7 +19,8 @@ user_agent = namedtuple(
 post = namedtuple(
     'Post',
     ['get'],
-    defaults=[lambda original_url=helper.original_url: None]
+    defaults=
+    [lambda original_url=helper.original_url: None]
 )
 
 
