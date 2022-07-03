@@ -53,10 +53,7 @@ def handler404(request, exception):
     fragments = [f for f in request.path.split('/') if f]
     if len(fragments) == 1:
         if url := _update_clicks(request, fragments[0]):
-            try:
-                return redirect(url.original_url)
-            except exception:
-                print(exception)
+            return redirect(url.original_url)
     return render(request, 'heyurl/404.html')
 
 
