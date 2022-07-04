@@ -18,7 +18,7 @@ def test_store(django_db_setup):
 
 
 @pytest.mark.django_db
-def test_short_url(patch_user_agent, django_db_setup):
+def test_short_redirect(patch_user_agent, django_db_setup):
     # Redirect
     response = views.redirect_short_url(mocks.request, helper.short_url)
     assert response.status_code == 302 and response.url == helper.original_url

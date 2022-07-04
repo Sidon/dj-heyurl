@@ -1,21 +1,21 @@
 from collections import Counter
-from heyurl import models
+from heyurl.models import Url, Click
 from . import helper
 
 
 def get_by_original(original_url):
-    return models.Url.objects.filter(original_url=original_url).first()
+    return Url.objects.filter(original_url=original_url).first()
 
 
 def get_by_short(short_url):
-    return models.Url.objects.filter(short_url=short_url).first()
+    return Url.objects.filter(short_url=short_url).first()
 
 
 def create_short_url(original_url):
-    key = 'a'
-    while models.Url.objects.filter(short_url=key).exists():
+    key = helper.short_url
+    while Url.objects.filter(short_url=key).exists():
         key = helper.key_gen()
-    url = models.Url()
+    url = Url()
     url.original_url = original_url
     url.short_url = key
     url.save()
@@ -24,7 +24,7 @@ def create_short_url(original_url):
 
 def save_click(short_url, browser, platform):
     if url := get_by_short(short_url):
-        click = models.Click()
+        click = Click()
         click.url = url
         click.browser = browser
         click.platform = platform
@@ -35,7 +35,7 @@ def save_click(short_url, browser, platform):
 
 
 def get_month_metrics(short_url, year, month):
-    clicks = models.Click.objects.filter(
+    clicks = Click.objects.filter(
         url__short_url=short_url,
         created_at__year=year,
         created_at__month=month,
@@ -84,7 +84,7 @@ def _get_top_n_metrics(clicks):
 
 
 def get_top_metrics(n=10, host=helper.host):
-    top_urls = models.Url.objects.all().order_by('-clicks')[:n]
+    top_urls = Url.objects.all().order_by('-clicks')[:n]
     data = []
     for url in top_urls:
         metrics = _get_top_n_metrics(url.related_clicks.all())

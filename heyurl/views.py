@@ -16,17 +16,18 @@ def index(request):
     return render(request, 'heyurl/index.html', context)
 
 
+@json_view()
 def store(request):
     # FIXME: Insert a new URL object into storage
     original_url = request.POST.get('original_url')
     validator = URLValidator()
     try:
         validator(original_url)
-    except URLValidator:
+    except ValidationError:
         return HttpResponse("invalid URL")
 
-    if existing_url := db_services.get_by_original(original_url):
-        return HttpResponse("URL Exists")
+    if db_services.get_by_original(original_url):
+        return HttpResponse(f"URL Exists:")
 
     db_services.create_short_url(original_url)
     return HttpResponse("Storing a new URL object into storage")
